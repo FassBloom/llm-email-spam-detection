@@ -63,7 +63,7 @@ MODELS = {
 
 
 LLMS = {
-    "RoBERTa": (
+    """ "RoBERTa": (
         AutoModelForSequenceClassification.from_pretrained(
             "roberta-base", num_labels=2
         ),
@@ -72,7 +72,7 @@ LLMS = {
     "SetFit-mpnet": (
         SetFitModel.from_pretrained("sentence-transformers/all-mpnet-base-v2"),
         None,
-    ),
+    ), """
     "FLAN-T5-base": (
         AutoModelForSeq2SeqLM.from_pretrained("google/flan-t5-base"),
         AutoTokenizer.from_pretrained("google/flan-t5-base"),
@@ -108,7 +108,7 @@ def get_trainer(model, dataset, tokenizer=None):
         )
 
     if type(model).__name__ == "SetFitModel":
-        trainer = SetFitTrainer(
+        """ trainer = SetFitTrainer(
             model=model,
             train_dataset=dataset["train"],
             eval_dataset=dataset["val"],
@@ -117,6 +117,16 @@ def get_trainer(model, dataset, tokenizer=None):
             batch_size=16,
             num_iterations=20,
             num_epochs=3,
+        ) """
+        trainer = SetFitTrainer(
+            model=model,
+            train_dataset=dataset["train"],
+            eval_dataset=dataset["val"],
+            loss_class=CosineSimilarityLoss,
+            metric="f1",
+            batch_size=8,                # down batch size
+            num_iterations=10,           # down
+            num_epochs=2,               # down
         )
         return trainer
 
@@ -155,9 +165,10 @@ def get_trainer(model, dataset, tokenizer=None):
             predict_with_generate=True,
             fp16=False,
             evaluation_strategy="epoch",
-            save_strategy="epoch",
-            load_best_model_at_end=True,
-            save_total_limit=5,
+            # save_strategy="epoch",
+            save_strategy="no",           # not save checkpoint
+            # load_best_model_at_end=True,
+            # save_total_limit=5,
         )
 
         trainer = Seq2SeqTrainer(
@@ -172,16 +183,31 @@ def get_trainer(model, dataset, tokenizer=None):
         return trainer
 
     else:
-        training_args = TrainingArguments(
+        """ training_args = TrainingArguments(
             output_dir="experiments",
             per_device_train_batch_size=16,
             per_device_eval_batch_size=8,
             learning_rate=5e-5,
             num_train_epochs=10,
             evaluation_strategy="epoch",
-            save_strategy="epoch",
-            load_best_model_at_end=True,
-            save_total_limit=10,
+            # save_strategy="epoch",
+            save_strategy="no",           # not save checkpoint
+            # load_best_model_at_end=True,
+            # save_total_limit=5,
+        ) """
+
+        training_args = TrainingArguments(
+            output_dir="experiments",
+            per_device_train_batch_size=8,     # down batch size
+            per_device_eval_batch_size=4,      # down batch size 
+            learning_rate=5e-5,
+            num_train_epochs=5,                # down
+            evaluation_strategy="epoch",
+            save_strategy="no",                # no checkpoint
+            load_best_model_at_end=False,      # no
+            # save_total_limit=10,             # 
+            gradient_accumulation_steps=2,      # gradient_accumulation_steps, for smaller batch
+            fp16=True                          # half precision
         )
 
         trainer = Trainer(

@@ -61,7 +61,8 @@ def plot_loss(experiment: str, dataset_name: str, model_name: str) -> None:
         plt.savefig(
             f"outputs/png/loss_{model_name}_{experiment}.png", format="png", dpi=300
         )
-        plt.show()
+        # plt.show()
+        plt.close()
 
 
 def plot_scores(experiment: str, dataset_name: str) -> None:
@@ -89,7 +90,8 @@ def plot_scores(experiment: str, dataset_name: str) -> None:
 
     plt.savefig(f"outputs/pdf/{experiment}.pdf", format="pdf")
     plt.savefig(f"outputs/png/{experiment}.png", format="png", dpi=300)
-    plt.show()
+    # plt.show()
+    plt.close()
 
 
 def plot_pie_charts() -> None:
@@ -121,7 +123,8 @@ def plot_pie_charts() -> None:
     plt.subplots_adjust(wspace=-0.3)
     plt.savefig(f"outputs/pdf/pie_charts.pdf", format="pdf")
     plt.savefig(f"outputs/png/pie_charts.png", format="png", dpi=300)
-    plt.show()
+    # plt.show()
+    plt.close()
 
 
 def save_scores(experiment: str, index: str, values: dict) -> None:

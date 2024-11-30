@@ -18,17 +18,24 @@ if __name__ == "__main__":
     Path("outputs/csv").mkdir(parents=True, exist_ok=True)
 
     # Train baseline models
-    train_baselines(
+    """ train_baselines(
         list(range(10)),
         ["ling", "sms", "spamassassin", "enron"],
         [4, 8, 16, 32, 64, 128, 256, 0.8],
         "test",
-    )
+    ) """
 
     # Train LLMs
-    train_llms(
+    """ train_llms(
         list(range(5)),
         ["ling", "sms", "spamassassin", "enron"],
         [4, 8, 16, 32, 64, 128, 256, 0.8],
+        "test",
+    ) """
+
+    train_llms(
+        list(range(2)),
+        ["ling"],
+        [4],
         "test",
     )
